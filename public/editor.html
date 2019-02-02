@@ -21,16 +21,28 @@
 </head>
 
 <body>
+    <select id="lang-select">
+        <option value="c_cpp">C/C++</option>
+        <option value="html">HTML</option>
+        <option value="css">CSS</option>
+        <option value="java">Java</option>
+    </select>
     <div id="editor"></div>
     <script>
+        var langSelect=document.getElementById('lang-select');
         var socket = io();
 
         var editor = ace.edit('editor');
-        editor.setTheme("ace/theme/monokai");
-        editor.session.setMode("ace/mode/c_cpp");
+        editor.setTheme('ace/theme/monokai');
+        editor.session.setMode('ace/mode/c_cpp');
 
         editor.session.on('change', function (delta) {
             socket.emit('keyevent', editor.getValue());
+        });
+
+        langSelect.addEventListener('change',function(){
+            editor.session.setMode(`ace/mode/${langSelect.value}`);
+            socket.emit('changelang',langSelect.value);
         });
     </script>
 </body>

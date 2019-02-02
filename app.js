@@ -20,6 +20,9 @@ io.on('connection', (socket) => {
     socket.on('keyevent', (key) => {
         socket.broadcast.emit('keyevent', key);
     });
+    socket.on('changelang',(lang)=>{
+        socket.broadcast.emit('changelang',lang);
+    });
 });
 
 http.listen(PORT, () => {

@@ -33,6 +33,9 @@
         socket.on('keyevent', function (msg) {
             editor.setValue(msg);
         });
+        socket.on('changelang',function(lang){
+            editor.session.setMode(`ace/mode/${lang}`);
+        });
     </script>
 </body>
 
