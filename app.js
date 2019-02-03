@@ -13,6 +13,12 @@ app.get('/', (req, res) => {
 app.get('/edit', (req, res) => {
     res.sendFile(__dirname + '/public/editor.html');
 });
+app.get('/favicon.ico', (req, res) => {
+    res.sendFile(__dirname + '/public/favicon.ico');
+});
+app.get('/logo.png', (req, res) => {
+    res.sendFile(__dirname + '/public/logo.png');
+})
 
 let getRandStr = () => {
     let randStr = '';
