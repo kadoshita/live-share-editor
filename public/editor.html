@@ -27,9 +27,10 @@
         <option value="css">CSS</option>
         <option value="java">Java</option>
     </select>
+    <a id="session-link"></a>
     <div id="editor"></div>
     <script>
-        var langSelect=document.getElementById('lang-select');
+        var langSelect = document.getElementById('lang-select');
         var socket = io();
 
         var editor = ace.edit('editor');
@@ -40,9 +41,16 @@
             socket.emit('keyevent', editor.getValue());
         });
 
-        langSelect.addEventListener('change',function(){
+        langSelect.addEventListener('change', function () {
             editor.session.setMode(`ace/mode/${langSelect.value}`);
-            socket.emit('changelang',langSelect.value);
+            socket.emit('changelang', langSelect.value);
+        });
+
+        socket.emit('join');
+
+        socket.on('sessionStart', function (sessionId) {
+            document.getElementById('session-link').href = location.host + '?session=' + sessionId;
+            document.getElementById('session-link').innerText = location.host + '?session=' + sessionId;
         });
     </script>
 </body>
