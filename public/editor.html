@@ -62,8 +62,8 @@
         socket.emit('join');
 
         socket.on('sessionStart', function (sessionId) {
-            document.getElementById('session-link').href = location.host + '?session=' + sessionId;
-            document.getElementById('session-link').innerText = location.host + '?session=' + sessionId;
+            document.getElementById('session-link').href = '/?session=' + sessionId;
+            document.getElementById('session-link').innerText = location.origin + '/?session=' + sessionId;
         });
     </script>
 </body>
