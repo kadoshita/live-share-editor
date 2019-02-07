@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>editor</title>
+    <link rel="icon" href="./favicon.ico">
+
+    <meta property="og:title" content="Live Share Editor">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://live-share-editor.azurewebsites.net">
+    <meta property="og:image" content="https://live-share-editor.azurewebsites.net/logo.png">
+    <meta property="og:description" content="リアルタイムでソースコードを共有するオンラインエディタ - Live Share Editor">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@lz650sss">
+    <meta name="twitter:title" content="Live Share Editor">
+    <meta name="twitter:description" content="リアルタイムでソースコードを共有するオンラインエディタ - Live Share Editor">
+    <meta name="twitter:image" content="https://live-share-editor.azurewebsites.net/logo.png">
+    <meta name="twitter:url" content="https://live-share-editor.azurewebsites.net" />
+    <style>
+        html,
+        body {
+            height: 95%;
+        }
+
+        #editor {
+            height: 100%;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.2/ace.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <select id="lang-select">
+        <option value="c_cpp">C/C++</option>
+        <option value="csharp">C#</option>
+        <option value="java">Java</option>
+        <option value="python">Python</option>
+        <option value="php">PHP</option>
+        <option value="ruby">Ruby</option>
+        <option value="golang">Go</option>
+        <option value="html">HTML</option>
+        <option value="css">CSS</option>
+        <option value="javascript">JavaScript</option>
+        <option value="markdown">Markdown</option>
+        <option value="plain_text">Plain Text</option>
+    </select>
+    <a id="session-link"></a>
+    <div id="editor"></div>
+    <script>
+        var langSelect = document.getElementById('lang-select');
+        var socket = io();
+
+        var editor = ace.edit('editor');
+        editor.setTheme('ace/theme/monokai');
+        editor.session.setMode('ace/mode/c_cpp');
+
+        var prevCode=localStorage.getItem('prevcode');
+        if(prevCode){
+            editor.setValue(prevCode);
+        }
+
+        var prevLang=localStorage.getItem('prevlang')
+        if(prevLang){
+            for(var i in langSelect.children){
+                if(langSelect.children[i].value==prevLang){
+                    langSelect.children[i].selected=true;
+                }
+            }
+        }
+
+        editor.session.on('change', function (delta) {
+            socket.emit('keyevent', editor.getValue());
+        });
+
+        langSelect.addEventListener('change', function () {
+            editor.session.setMode(`ace/mode/${langSelect.value}`);
+            socket.emit('changelang', langSelect.value);
+        });
+
+        socket.emit('join');
+
+        socket.on('sessionStart', function (sessionId) {
+            document.getElementById('session-link').href = '/?session=' + sessionId;
+            document.getElementById('session-link').innerText = location.origin + '/?session=' + sessionId;
+        });
+
+        window.onbeforeunload=function(){
+            localStorage.setItem('prevcode',editor.getValue());
+            localStorage.setItem('prevlang',langSelect.value);
+        }
+    </script>
+</body>
+
+</html>
