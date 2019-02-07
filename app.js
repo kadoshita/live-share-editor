@@ -1,61 +1,41 @@
-const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-require('dotenv').config();
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 
-const PORT = (process.env.PORT || 3000);
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
 
-const ALPHANUMERIC = 'abcdefghijklmnopqrstuvwxyz0123456789';
+var app = express();
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
-});
-app.get('/edit', (req, res) => {
-    res.sendFile(__dirname + '/public/editor.html');
-});
-app.get('/favicon.ico', (req, res) => {
-    res.sendFile(__dirname + '/public/favicon.ico');
-});
-app.get('/logo.png', (req, res) => {
-    res.sendFile(__dirname + '/public/logo.png');
-})
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
-let getRandStr = () => {
-    let randStr = '';
-    for (var i = 0; i < 8; i++) {
-        randStr += ALPHANUMERIC[Math.floor(Math.random() * ALPHANUMERIC.length)];
-    }
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-    return randStr;
-};
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
 
-io.on('connection', (socket) => {
-    let sessionId = '';
-    console.log('connection');
-    socket.on('join', _sessionId => {
-        if (_sessionId) {
-            console.log(`session id:${_sessionId}`);
-            socket.join(_sessionId);
-            sessionId = _sessionId;
-        } else {
-            let _sessionId = getRandStr();
-            console.log(`new session id:${_sessionId}`);
-            socket.join(_sessionId);
-            io.to(socket.id).emit('sessionStart', _sessionId);
-            sessionId = _sessionId;
-        }
-    });
-    socket.on('disconnect', () => {
-        console.log('disconnect');
-    });
-    socket.on('keyevent', (key) => {
-        socket.broadcast.to(sessionId).emit('keyevent', key);
-    });
-    socket.on('changelang', (lang) => {
-        socket.broadcast.to(sessionId).emit('changelang', lang);
-    });
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
 });
 
-http.listen(PORT, () => {
-    console.log(`server start http://localhost:${PORT}`);
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
 });
+
+module.exports = app;
