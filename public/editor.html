@@ -58,6 +58,20 @@
         editor.setTheme('ace/theme/monokai');
         editor.session.setMode('ace/mode/c_cpp');
 
+        var prevCode=localStorage.getItem('prevcode');
+        if(prevCode){
+            editor.setValue(prevCode);
+        }
+
+        var prevLang=localStorage.getItem('prevlang')
+        if(prevLang){
+            for(var i in langSelect.children){
+                if(langSelect.children[i].value==prevLang){
+                    langSelect.children[i].selected=true;
+                }
+            }
+        }
+
         editor.session.on('change', function (delta) {
             socket.emit('keyevent', editor.getValue());
         });
@@ -73,6 +87,11 @@
             document.getElementById('session-link').href = '/?session=' + sessionId;
             document.getElementById('session-link').innerText = location.origin + '/?session=' + sessionId;
         });
+
+        window.onbeforeunload=function(){
+            localStorage.setItem('prevcode',editor.getValue());
+            localStorage.setItem('prevlang',langSelect.value);
+        }
     </script>
 </body>
 
