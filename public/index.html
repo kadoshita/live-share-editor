@@ -35,17 +35,41 @@
 </head>
 
 <body>
+    <select id="theme-select">
+        <option value="monokai">monokai</option>
+        <option value="cobalt">cobalt</option>
+        <option value="terminal">terminal</option>
+        <option value="twilight">twilight</option>
+        <option value="chrome">chrome</option>
+        <option value="eclipse">eclipse</option>
+        <option value="github">github</option>
+        <option value="textmate">textmate</option>
+        <option value="xcode">xcode</option>
+        <option value="dreamweaver">dreamweaver</option>
+    </select>
     <a href="/edit">editor</a>
     <div id="editor"></div>
     <a class="github-button" href="https://github.com/Kadoshita/live-share-editor" data-size="large" data-show-count="true" aria-label="Star Kadoshita/live-share-editor on GitHub">Star</a>
     <a class="github-button" href="https://github.com/Kadoshita/live-share-editor/issues" data-size="large" data-show-count="true" aria-label="Issue Kadoshita/live-share-editor on GitHub">Issue</a>
     <script>
+        var themeSelect = document.getElementById('theme-select');
         var socket = io();
 
         var editor = ace.edit('editor');
         editor.setReadOnly(true);
         editor.setTheme("ace/theme/monokai");
         editor.session.setMode("ace/mode/c_cpp");
+
+        var prevTheme = localStorage.getItem('prevtheme');
+        if (prevTheme) {
+            for (var i in themeSelect.children) {
+                if (themeSelect.children[i].value == prevTheme) {
+                    themeSelect.children[i].selected = true;
+                    editor.setTheme('ace/theme/' + prevTheme);
+                    break;
+                }
+            }
+        }
 
         socket.on('keyevent', function (msg) {
             editor.setValue(msg);
@@ -54,7 +78,14 @@
             editor.session.setMode(`ace/mode/${lang}`);
         });
 
+        themeSelect.addEventListener('change', function () {
+            editor.setTheme('ace/theme/' + themeSelect.value);
+        });
+
         socket.emit('join', location.search.replace('?', '').split('session=')[1]);
+        window.onbeforeunload = function () {
+            localStorage.setItem('prevtheme', themeSelect.value);
+        };
     </script>
 </body>
 

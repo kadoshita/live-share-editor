@@ -48,26 +48,52 @@
         <option value="markdown">Markdown</option>
         <option value="plain_text">Plain Text</option>
     </select>
+    <select id="theme-select">
+        <option value="monokai">monokai</option>
+        <option value="cobalt">cobalt</option>
+        <option value="terminal">terminal</option>
+        <option value="twilight">twilight</option>
+        <option value="chrome">chrome</option>
+        <option value="eclipse">eclipse</option>
+        <option value="github">github</option>
+        <option value="textmate">textmate</option>
+        <option value="xcode">xcode</option>
+        <option value="dreamweaver">dreamweaver</option>
+    </select>
     <a id="session-link"></a>
     <div id="editor"></div>
     <script>
         var langSelect = document.getElementById('lang-select');
+        var themeSelect = document.getElementById('theme-select');
         var socket = io();
 
         var editor = ace.edit('editor');
         editor.setTheme('ace/theme/monokai');
         editor.session.setMode('ace/mode/c_cpp');
 
-        var prevCode=localStorage.getItem('prevcode');
-        if(prevCode){
+        var prevCode = localStorage.getItem('prevcode');
+        if (prevCode) {
             editor.setValue(prevCode);
         }
 
-        var prevLang=localStorage.getItem('prevlang')
-        if(prevLang){
-            for(var i in langSelect.children){
-                if(langSelect.children[i].value==prevLang){
-                    langSelect.children[i].selected=true;
+        var prevLang = localStorage.getItem('prevlang');
+        if (prevLang) {
+            for (var i in langSelect.children) {
+                if (langSelect.children[i].value == prevLang) {
+                    langSelect.children[i].selected = true;
+                    editor.session.setMode('ace/mode/'+prevLang);
+                    break;
+                }
+            }
+        }
+
+        var prevTheme = localStorage.getItem('prevtheme');
+        if (prevTheme) {
+            for (var i in themeSelect.children) {
+                if (themeSelect.children[i].value == prevTheme) {
+                    themeSelect.children[i].selected = true;
+                    editor.setTheme('ace/theme/' + prevTheme);
+                    break;
                 }
             }
         }
@@ -81,6 +107,10 @@
             socket.emit('changelang', langSelect.value);
         });
 
+        themeSelect.addEventListener('change', function () {
+            editor.setTheme('ace/theme/' + themeSelect.value);
+        });
+
         socket.emit('join');
 
         socket.on('sessionStart', function (sessionId) {
@@ -88,10 +118,11 @@
             document.getElementById('session-link').innerText = location.origin + '/?session=' + sessionId;
         });
 
-        window.onbeforeunload=function(){
-            localStorage.setItem('prevcode',editor.getValue());
-            localStorage.setItem('prevlang',langSelect.value);
-        }
+        window.onbeforeunload = function () {
+            localStorage.setItem('prevcode', editor.getValue());
+            localStorage.setItem('prevlang', langSelect.value);
+            localStorage.setItem('prevtheme', themeSelect.value);
+        };
     </script>
 </body>
 
