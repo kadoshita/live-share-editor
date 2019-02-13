@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>viewer</title>
     <link rel="icon" href="./favicon.ico">
+    <link rel="stylesheet" href="/css/index.css">
 
     <meta property="og:title" content="Live Share Editor">
     <meta property="og:type" content="website">
@@ -19,19 +20,11 @@
     <meta name="twitter:description" content="リアルタイムでソースコードを共有するオンラインエディタ - Live Share Editor">
     <meta name="twitter:image" content="https://live-share-editor.azurewebsites.net/logo.png">
     <meta name="twitter:url" content="https://live-share-editor.azurewebsites.net" />
-    <style>
-        html,
-        body {
-            height: 95%;
-        }
 
-        #editor {
-            height: 100%;
-        }
-    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.2/ace.js"></script>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/index.js"></script>
 </head>
 
 <body>
@@ -51,42 +44,6 @@
     <div id="editor"></div>
     <a class="github-button" href="https://github.com/Kadoshita/live-share-editor" data-size="large" data-show-count="true" aria-label="Star Kadoshita/live-share-editor on GitHub">Star</a>
     <a class="github-button" href="https://github.com/Kadoshita/live-share-editor/issues" data-size="large" data-show-count="true" aria-label="Issue Kadoshita/live-share-editor on GitHub">Issue</a>
-    <script>
-        var themeSelect = document.getElementById('theme-select');
-        var socket = io();
-
-        var editor = ace.edit('editor');
-        editor.setReadOnly(true);
-        editor.setTheme("ace/theme/monokai");
-        editor.session.setMode("ace/mode/c_cpp");
-
-        var prevTheme = localStorage.getItem('prevtheme');
-        if (prevTheme) {
-            for (var i in themeSelect.children) {
-                if (themeSelect.children[i].value == prevTheme) {
-                    themeSelect.children[i].selected = true;
-                    editor.setTheme('ace/theme/' + prevTheme);
-                    break;
-                }
-            }
-        }
-
-        socket.on('keyevent', function (msg) {
-            editor.setValue(msg);
-        });
-        socket.on('changelang', function (lang) {
-            editor.session.setMode(`ace/mode/${lang}`);
-        });
-
-        themeSelect.addEventListener('change', function () {
-            editor.setTheme('ace/theme/' + themeSelect.value);
-        });
-
-        socket.emit('join', location.search.replace('?', '').split('session=')[1]);
-        window.onbeforeunload = function () {
-            localStorage.setItem('prevtheme', themeSelect.value);
-        };
-    </script>
 </body>
 
 </html>

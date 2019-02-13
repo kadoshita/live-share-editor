@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>editor</title>
     <link rel="icon" href="./favicon.ico">
+    <link rel="stylesheet" href="/css/edit.css">
 
     <meta property="og:title" content="Live Share Editor">
     <meta property="og:type" content="website">
@@ -19,18 +20,10 @@
     <meta name="twitter:description" content="リアルタイムでソースコードを共有するオンラインエディタ - Live Share Editor">
     <meta name="twitter:image" content="https://live-share-editor.azurewebsites.net/logo.png">
     <meta name="twitter:url" content="https://live-share-editor.azurewebsites.net" />
-    <style>
-        html,
-        body {
-            height: 95%;
-        }
 
-        #editor {
-            height: 100%;
-        }
-    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.2/ace.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/edit.js"></script>
 </head>
 
 <body>
@@ -62,68 +55,6 @@
     </select>
     <a id="session-link"></a>
     <div id="editor"></div>
-    <script>
-        var langSelect = document.getElementById('lang-select');
-        var themeSelect = document.getElementById('theme-select');
-        var socket = io();
-
-        var editor = ace.edit('editor');
-        editor.setTheme('ace/theme/monokai');
-        editor.session.setMode('ace/mode/c_cpp');
-
-        var prevCode = localStorage.getItem('prevcode');
-        if (prevCode) {
-            editor.setValue(prevCode);
-        }
-
-        var prevLang = localStorage.getItem('prevlang');
-        if (prevLang) {
-            for (var i in langSelect.children) {
-                if (langSelect.children[i].value == prevLang) {
-                    langSelect.children[i].selected = true;
-                    editor.session.setMode('ace/mode/'+prevLang);
-                    break;
-                }
-            }
-        }
-
-        var prevTheme = localStorage.getItem('prevtheme');
-        if (prevTheme) {
-            for (var i in themeSelect.children) {
-                if (themeSelect.children[i].value == prevTheme) {
-                    themeSelect.children[i].selected = true;
-                    editor.setTheme('ace/theme/' + prevTheme);
-                    break;
-                }
-            }
-        }
-
-        editor.session.on('change', function (delta) {
-            socket.emit('keyevent', editor.getValue());
-        });
-
-        langSelect.addEventListener('change', function () {
-            editor.session.setMode(`ace/mode/${langSelect.value}`);
-            socket.emit('changelang', langSelect.value);
-        });
-
-        themeSelect.addEventListener('change', function () {
-            editor.setTheme('ace/theme/' + themeSelect.value);
-        });
-
-        socket.emit('join');
-
-        socket.on('sessionStart', function (sessionId) {
-            document.getElementById('session-link').href = '/?session=' + sessionId;
-            document.getElementById('session-link').innerText = location.origin + '/?session=' + sessionId;
-        });
-
-        window.onbeforeunload = function () {
-            localStorage.setItem('prevcode', editor.getValue());
-            localStorage.setItem('prevlang', langSelect.value);
-            localStorage.setItem('prevtheme', themeSelect.value);
-        };
-    </script>
 </body>
 
 </html>
