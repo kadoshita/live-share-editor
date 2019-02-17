@@ -6,6 +6,8 @@ const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
 const editRouter = require('./routes/edit');
+const privacypolicy = require('./routes/privacypolicy');
+const termsofservice = require('./routes/termsofservice');
 
 const app = express();
 
@@ -21,6 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/edit', editRouter);
+app.use('/privacypolicy', privacypolicy);
+app.use('/termsofservice', termsofservice);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
