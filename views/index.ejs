@@ -21,41 +21,50 @@
     <meta name="twitter:image" content="https://live-share-editor.azurewebsites.net/img/logo.png">
     <meta name="twitter:url" content="https://live-share-editor.azurewebsites.net" />
 
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-134626763-1"></script>
     <link rel="stylesheet" type="text/css"
         href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
     <script>
-        window.addEventListener("load", function () {
+        window.addEventListener('load', function () {
             window.cookieconsent.initialise({
-                "palette": {
-                    "popup": {
-                        "background": "#252e39"
+                palette: {
+                    popup: {
+                        background: '#252e39'
                     },
-                    "button": {
-                        "background": "#14a7d0"
+                    button: {
+                        background: '#14a7d0'
                     }
                 },
-                "theme": "edgeless",
-                "position": "top",
-                "content": {
-                    "message": "このアプリケーションはアクセス解析のためにGoogle Analytics、cookieを使用します．",
-                    "dismiss": "同意する",
-                    "link": "プライバシーポリシー",
-                    "href": "https://live-share-editor.azurewebsites.net/privacypolicy"
+                theme: 'edgeless',
+                position: 'top',
+                content: {
+                    message: 'このアプリケーションはアクセス解析のためにGoogle Analytics、cookieを使用します．',
+                    dismiss: '同意する',
+                    link: 'プライバシーポリシー',
+                    href: 'https://live-share-editor.azurewebsites.net/privacypolicy'
+                },
+                onInitialise: function (status) {
+                    console.info('enable ga');
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag() { dataLayer.push(arguments); }
+                    gtag('js', new Date());
+
+                    gtag('config', 'UA-134626763-1');
+                },
+                onPopupClose: function () {
+                    console.info('enable ga');
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag() { dataLayer.push(arguments); }
+                    gtag('js', new Date());
+
+                    gtag('config', 'UA-134626763-1');
                 }
-            })
+            });
         });
     </script>
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-134626763-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'UA-134626763-1');
-    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.2/ace.js"></script>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="/socket.io/socket.io.js"></script>
