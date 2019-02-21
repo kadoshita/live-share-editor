@@ -25,10 +25,11 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-134626763-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
         gtag('config', 'UA-134626763-1');
+        window.gtag = gtag;
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.2/ace.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -64,6 +65,8 @@
     </select>
     <a id="session-link"></a>
     <div id="editor"></div>
+    <a id="rating-good" href="#">Good</a>
+    <a id="rating-bad" href="#">Bad</a>
 </body>
 
 </html>

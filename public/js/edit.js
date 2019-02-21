@@ -42,4 +42,14 @@ window.addEventListener('load', () => {
         localStorage.setItem('prevcode', editor.getValue());
         localStorage.setItem('prevlang', langSelect.value);
     });
+
+    let ratingGood = document.getElementById('rating-good');
+    let ratingBad = document.getElementById('rating-bad');
+
+    ratingGood.addEventListener('click', () => {
+        gtag('event', 'good', { 'event_category': 'rating' });
+    });
+    ratingBad.addEventListener('click', () => {
+        gtag('event', 'bad', { 'event_category': 'rating' });
+    });
 });
