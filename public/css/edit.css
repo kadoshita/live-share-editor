@@ -5,3 +5,6 @@ html, body {
 #editor {
     height: 100%;
 }
+#cursor-position, #text-count{
+    display: inline;
+}

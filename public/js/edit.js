@@ -1,5 +1,7 @@
 window.addEventListener('load', () => {
     let langSelect = document.getElementById('lang-select');
+    let cursorPosition = document.getElementById('cursor-position');
+    let textCount = document.getElementById('text-count');
     let socket = io();
     let editor = ace.edit('editor');
 
@@ -9,6 +11,7 @@ window.addEventListener('load', () => {
     let prevCode = localStorage.getItem('prevcode');
     if (prevCode) {
         editor.setValue(prevCode);
+        textCount.innerText = `count:${prevCode.length}`;
     }
 
     let prevLang = localStorage.getItem('prevlang')
@@ -22,8 +25,15 @@ window.addEventListener('load', () => {
     }
 
     editor.session.on('change', delta => {
-        socket.emit('keyevent', editor.getValue());
+        let v = editor.getValue();
+        socket.emit('keyevent', v);
+        textCount.innerText = `count:${v.length}`;
     });
+
+    editor.selection.on('changeCursor', () => {
+        let p = editor.getCursorPosition();
+        cursorPosition.innerText = `row:${p.row} col:${p.column}`;
+    })
 
     langSelect.addEventListener('change', () => {
         editor.session.setMode(`ace/mode/${langSelect.value}`);
