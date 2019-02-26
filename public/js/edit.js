@@ -2,6 +2,7 @@ window.addEventListener('load', () => {
     let langSelect = document.getElementById('lang-select');
     let cursorPosition = document.getElementById('cursor-position');
     let textCount = document.getElementById('text-count');
+    let runCode = document.getElementById('run-code');
     let socket = io();
     let editor = ace.edit('editor');
 
@@ -51,6 +52,46 @@ window.addEventListener('load', () => {
     window.addEventListener('beforeunload', () => {
         localStorage.setItem('prevcode', editor.getValue());
         localStorage.setItem('prevlang', langSelect.value);
+    });
+
+    runCode.addEventListener('click', () => {
+        console.log(editor.getValue());
+        let postCode = {
+            code: editor.getValue(),
+            compiler: 'gcc-head'
+        };
+
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = () => {
+            switch (xhr.readyState) {
+                case 0:
+                    console.log('uninitialized!');
+                    break;
+                case 1:
+                    console.log('loading...');
+                    break;
+                case 2:
+                    console.log('loaded.');
+                    break;
+                case 3:
+                    console.log(`interactive... ${xhr.responseText.length} bytes.`);
+                    break;
+                case 4:
+                    if (xhr.status == 200 || xhr.status == 304) {
+                        var data = JSON.parse(xhr.responseText);
+                        console.log(`COMPLETE! : ${data}`);
+                        alert(`code:${data.status}\nresult:${data.program_output}`);
+                    } else {
+                        console.log(`Failed. HttpStatus: ${xhr.statusText}`);
+                    }
+                    break;
+            }
+        };
+
+        xhr.open('POST', 'https://wandbox.org/api/compile.json', false);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(postCode));
+        xhr.abort();
     });
 
     let ratingGood = document.getElementById('rating-good');
