@@ -3,11 +3,13 @@ html, body {
 }
 
 #editor {
-    height: 90%;
+    height: 95%;
 }
 #cursor-position, #text-count{
     display: inline;
 }
 #run-result{
     display: none;
+    width: 100%;
+    height: 5%;
 }

@@ -80,7 +80,12 @@ window.addEventListener('load', () => {
                     if (xhr.status == 200 || xhr.status == 304) {
                         var data = JSON.parse(xhr.responseText);
                         console.log(`COMPLETE! : ${data}`);
-                        alert(`code:${data.status}\nresult:${data.program_output}`);
+                        //alert(`code:${data.status}\nresult:${data.program_output}`);
+                        let runResult=document.getElementById('run-result');
+                        let editorElm=document.getElementById('editor');
+                        editorElm.style.height='90%';
+                        runResult.value=`code:${data.status}\nresult:${data.program_output}`;
+                        runResult.style.display='inline';
                     } else {
                         console.log(`Failed. HttpStatus: ${xhr.statusText}`);
                     }
