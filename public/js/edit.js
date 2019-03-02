@@ -6,6 +6,17 @@ window.addEventListener('load', () => {
     let socket = io();
     let editor = ace.edit('editor');
 
+    const wandboxSupportLang={
+        c_cpp:'gcc-head',
+        csharp:'mono-head',
+        java:'openjdk-head',
+        python:'cpython-head',
+        php:'php-head',
+        ruby:'ruby-head',
+        golang:'go-head',
+        javascript:'nodejs-head'
+    };
+
     editor.setTheme('ace/theme/monokai');
     editor.session.setMode('ace/mode/c_cpp');
 
@@ -56,9 +67,13 @@ window.addEventListener('load', () => {
 
     runCode.addEventListener('click', () => {
         console.log(editor.getValue());
+        if(!wandboxSupportLang[langSelect.value]){
+            console.warn('not support language');
+            return;
+        }
         let postCode = {
             code: editor.getValue(),
-            compiler: 'gcc-head'
+            compiler: wandboxSupportLang[langSelect.value]
         };
 
         let xhr = new XMLHttpRequest();
