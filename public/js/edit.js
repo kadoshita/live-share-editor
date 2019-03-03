@@ -66,10 +66,9 @@ window.addEventListener('load', () => {
     });
 
     runCode.addEventListener('click', () => {
+        let stdInput = document.getElementById('std-input');
         let runResult = document.getElementById('run-result');
-        let editorElm = document.getElementById('editor');
 
-        editorElm.style.height = '90%';
         runResult.style.display = 'inline';
         runResult.value = '';
         if (!wandboxSupportLang[langSelect.value]) {
@@ -78,7 +77,8 @@ window.addEventListener('load', () => {
         }
         let postCode = {
             code: editor.getValue(),
-            compiler: wandboxSupportLang[langSelect.value]
+            compiler: wandboxSupportLang[langSelect.value],
+            stdin: stdInput.value
         };
 
         let xhr = new XMLHttpRequest();
