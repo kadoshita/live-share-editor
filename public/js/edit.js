@@ -6,15 +6,15 @@ window.addEventListener('load', () => {
     let socket = io();
     let editor = ace.edit('editor');
 
-    const wandboxSupportLang={
-        c_cpp:'gcc-head',
-        csharp:'mono-head',
-        java:'openjdk-head',
-        python:'cpython-head',
-        php:'php-head',
-        ruby:'ruby-head',
-        golang:'go-head',
-        javascript:'nodejs-head'
+    const wandboxSupportLang = {
+        c_cpp: 'gcc-head',
+        csharp: 'mono-head',
+        java: 'openjdk-head',
+        python: 'cpython-head',
+        php: 'php-head',
+        ruby: 'ruby-head',
+        golang: 'go-head',
+        javascript: 'nodejs-head'
     };
 
     editor.setTheme('ace/theme/monokai');
@@ -66,9 +66,14 @@ window.addEventListener('load', () => {
     });
 
     runCode.addEventListener('click', () => {
-        console.log(editor.getValue());
-        if(!wandboxSupportLang[langSelect.value]){
-            console.warn('not support language');
+        let runResult = document.getElementById('run-result');
+        let editorElm = document.getElementById('editor');
+
+        editorElm.style.height = '90%';
+        runResult.style.display = 'inline';
+        runResult.value = '';
+        if (!wandboxSupportLang[langSelect.value]) {
+            runResult.value += 'not support language\n';
             return;
         }
         let postCode = {
@@ -80,29 +85,23 @@ window.addEventListener('load', () => {
         xhr.onreadystatechange = () => {
             switch (xhr.readyState) {
                 case 0:
-                    console.log('uninitialized!');
+                    runResult.value += 'uninitialized!\n';
                     break;
                 case 1:
-                    console.log('loading...');
+                    runResult.value += 'loading...\n';
                     break;
                 case 2:
-                    console.log('loaded.');
+                    runResult.value += 'loaded.\n';
                     break;
                 case 3:
-                    console.log(`interactive... ${xhr.responseText.length} bytes.`);
+                    runResult.value += `interactive... ${xhr.responseText.length} bytes.\n`;
                     break;
                 case 4:
                     if (xhr.status == 200 || xhr.status == 304) {
                         var data = JSON.parse(xhr.responseText);
-                        console.log(`COMPLETE! : ${data}`);
-                        //alert(`code:${data.status}\nresult:${data.program_output}`);
-                        let runResult=document.getElementById('run-result');
-                        let editorElm=document.getElementById('editor');
-                        editorElm.style.height='90%';
-                        runResult.value=`code:${data.status}\nresult:${data.program_output}`;
-                        runResult.style.display='inline';
+                        runResult.value += `code:${data.status}\nresult:${data.program_output}\n`;
                     } else {
-                        console.log(`Failed. HttpStatus: ${xhr.statusText}`);
+                        console.error(`Failed. HttpStatus: ${xhr.statusText}`);
                     }
                     break;
             }
