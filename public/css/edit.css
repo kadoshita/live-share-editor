@@ -3,8 +3,16 @@ html, body {
 }
 
 #editor {
-    height: 100%;
+    height: 80%;
 }
 #cursor-position, #text-count{
     display: inline;
+}
+#std-input{
+    width: 100%;
+    height: 48px;
+}
+#run-result{
+    width: 100%;
+    height: 48px;
 }
