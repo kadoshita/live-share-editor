@@ -2,6 +2,10 @@ html, body {
     height: 95%;
 }
 
+#run-code{
+    height: 20px;
+    width: 64px;
+}
 #editor {
     height: 80%;
 }
