@@ -79,6 +79,7 @@ export class Viewer extends Component {
                     mode={this.state.mode}
                     theme={this.state.theme}
                     value={this.state.receiveText}
+                    readOnly={true}
                     setOptions={{
                         useWorker: false
                     }}
