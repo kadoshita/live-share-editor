@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using live_share_editor.Hubs;
+
 namespace live_share_editor
 {
     public class Startup
@@ -28,6 +30,8 @@ namespace live_share_editor
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +59,8 @@ namespace live_share_editor
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+
+                endpoints.MapHub<ShareHub>("/shareHub");
             });
 
             app.UseSpa(spa =>
