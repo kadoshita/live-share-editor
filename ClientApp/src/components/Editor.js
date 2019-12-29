@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import * as SignalR from '@microsoft/signalr';
 import ReactAce from 'react-ace';
+import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core'
 
 import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/mode-csharp';
@@ -79,16 +80,28 @@ export class Editor extends Component {
     render() {
         return (
             <div>
-                <label>言語:
-                    <select onChange={e => this.setState({ mode: e.target.value })}>
-                        {this.langList.map(l => <option key={l.value} value={l.value}>{l.name}</option>)}
-                    </select>
-                </label>
-                <label>テーマ:
-                    <select onChange={e => this.setState({ theme: e.target.value })}>
-                        {this.themeList.map(l => <option key={l} value={l}>{l}</option>)}
-                    </select>
-                </label>
+                <FormControl>
+                    <InputLabel id='lang-select-label'>言語</InputLabel>
+                    <Select
+                        labelId='lang-select-label'
+                        id='lang-select'
+                        value={this.state.mode}
+                        onChange={e => this.setState({ mode: e.target.value })}
+                    >
+                        {this.langList.map(l => <MenuItem key={l.value} value={l.value}>{l.name}</MenuItem>)}
+                    </Select>
+                </FormControl>
+                <FormControl>
+                    <InputLabel id='theme-select-label'>テーマ</InputLabel>
+                    <Select
+                        labelId='theme-select-label'
+                        id='theme-select'
+                        value={this.state.theme}
+                        onChange={e => this.setState({ theme: e.target.value })}
+                    >
+                        {this.themeList.map(t => <MenuItem key={t} value={t}>{t}</MenuItem>)}
+                    </Select>
+                </FormControl>
                 <ReactAce
                     width='100%'
                     mode={this.state.mode}

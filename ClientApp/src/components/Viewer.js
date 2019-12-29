@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import * as SignalR from '@microsoft/signalr';
 import ReactAce from 'react-ace';
+import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core'
 
 import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/mode-csharp';
@@ -62,11 +63,17 @@ export class Viewer extends Component {
     render() {
         return (
             <div>
-                <label>テーマ:
-                    <select onChange={e => this.setState({ theme: e.target.value })}>
-                        {this.themeList.map(l => <option key={l} value={l}>{l}</option>)}
-                    </select>
-                </label>
+                <FormControl>
+                    <InputLabel id='theme-select-label'>テーマ</InputLabel>
+                    <Select
+                        labelId='theme-select-label'
+                        id='theme-select'
+                        value={this.state.theme}
+                        onChange={e => this.setState({ theme: e.target.value })}
+                    >
+                        {this.themeList.map(t => <MenuItem key={t} value={t}>{t}</MenuItem>)}
+                    </Select>
+                </FormControl>
                 <ReactAce
                     width='100%'
                     mode={this.state.mode}
