@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
 import * as SignalR from '@microsoft/signalr';
+import ReactAce from 'react-ace';
+
+import 'ace-builds/src-noconflict/mode-c_cpp';
+import 'ace-builds/src-noconflict/theme-monokai';
 
 export class Viewer extends Component {
     static displayName = Viewer.name;
@@ -23,7 +27,13 @@ export class Viewer extends Component {
     render() {
         return (
             <div>
-                <p>{this.state.receiveText}</p>
+                <ReactAce
+                    width='100%'
+                    mode='c_cpp'
+                    theme='monokai'
+                    value={this.state.receiveText}
+                >
+                </ReactAce>
             </div>
         )
     }

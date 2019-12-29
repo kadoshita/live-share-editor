@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
 import * as SignalR from '@microsoft/signalr';
+import ReactAce from 'react-ace';
+
+import 'ace-builds/src-noconflict/mode-c_cpp';
+import 'ace-builds/src-noconflict/theme-monokai';
 
 export class Editor extends Component {
     static displayName = Editor.name;
@@ -18,16 +22,21 @@ export class Editor extends Component {
         });
     }
 
-    sendText() {
-        this.connection.invoke("SendMessage", this.state.sendText).catch(err => {
+    sendText(sendText) {
+        this.connection.invoke("SendMessage", sendText).catch(err => {
             console.error(err);
         });
     }
     render() {
         return (
             <div>
-                <input type="text" ref="sendText" onChange={e => this.setState({ sendText: e.target.value })}></input>
-                <button onClick={this.sendTextBinded}>Send</button>
+                <ReactAce
+                    width='100%'
+                    mode='c_cpp'
+                    theme='monokai'
+                    onChange={v => this.sendTextBinded(v)}
+                >
+                </ReactAce>
             </div>
         )
     }
