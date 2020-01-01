@@ -73,7 +73,19 @@ export class Editor extends Component {
 
     sendText(sendText) {
         this.setState({ code: sendText });
-        this.connection.invoke("SendMessage", sendText).catch(err => {
+        this.connection.invoke("SendMessage", JSON.stringify({
+            type: 'code',
+            data: sendText
+        })).catch(err => {
+            console.error(err);
+        });
+    }
+    sendMode(mode) {
+        this.setState({ mode: mode });
+        this.connection.invoke("SendMessage", JSON.stringify({
+            type: 'mode',
+            data: mode
+        })).catch(err => {
             console.error(err);
         });
     }
@@ -86,7 +98,7 @@ export class Editor extends Component {
                         labelId='lang-select-label'
                         id='lang-select'
                         value={this.state.mode}
-                        onChange={e => this.setState({ mode: e.target.value })}
+                        onChange={e => this.sendMode(e.target.value)}
                     >
                         {this.langList.map(l => <MenuItem key={l.value} value={l.value}>{l.name}</MenuItem>)}
                     </Select>

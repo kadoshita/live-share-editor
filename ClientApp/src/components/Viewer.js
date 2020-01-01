@@ -51,7 +51,12 @@ export class Viewer extends Component {
         };
         this.connection = new SignalR.HubConnectionBuilder().withUrl("/shareHub").build();
         this.connection.on('ReceiveMessage', message => {
-            this.setState({ receiveText: message });
+            const msg = JSON.parse(message);
+            if (msg.type === 'code') {
+                this.setState({ receiveText: msg.data });
+            } else if (msg.type === 'mode') {
+                this.setState({ mode: msg.data });
+            }
         });
         this.connection.start().then(() => {
             console.log('connected');
