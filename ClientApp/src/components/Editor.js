@@ -62,7 +62,9 @@ export class Editor extends Component {
             theme: 'monokai',
             code: '',
             console: '',
-            isRunning: false
+            isRunning: false,
+            cursorRow: 0,
+            cursorCol: 0
         };
         this.execCodeBinded = this.execCode.bind(this);
         this.connection = new SignalR.HubConnectionBuilder().withUrl("/shareHub").build();
@@ -146,7 +148,9 @@ export class Editor extends Component {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={4}></Grid>
+                        <Grid item xs={4}>
+                            <p>行:{this.state.cursorRow} 列:{this.state.cursorCol} 文字数:{this.state.code.length}</p>
+                        </Grid>
                         <Grid item xs={2}>
                             <Button fullWidth color='primary' variant='contained' onClick={this.execCodeBinded} disabled={this.state.isRunning}>▶ 実行</Button>
                         </Grid>
@@ -161,6 +165,7 @@ export class Editor extends Component {
                         mode={this.state.mode}
                         theme={this.state.theme}
                         onChange={v => this.sendText(v)}
+                        onCursorChange={c => this.setState({ cursorRow: c.cursor.row, cursorCol: c.cursor.column })}
                         value={this.state.code}
                         setOptions={{
                             useWorker: false
