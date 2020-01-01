@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import * as SignalR from '@microsoft/signalr';
 import ReactAce from 'react-ace';
-import { Select, MenuItem, InputLabel, FormControl, Grid, Button } from '@material-ui/core'
+import { Select, MenuItem, InputLabel, FormControl, Grid, Button, LinearProgress } from '@material-ui/core'
 
 import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/mode-csharp';
@@ -61,7 +61,8 @@ export class Editor extends Component {
             mode: 'c_cpp',
             theme: 'monokai',
             code: '',
-            console: ''
+            console: '',
+            isRunning: false
         };
         this.execCodeBinded = this.execCode.bind(this);
         this.connection = new SignalR.HubConnectionBuilder().withUrl("/shareHub").build();
@@ -90,25 +91,27 @@ export class Editor extends Component {
             console.error(err);
         });
     }
-    async execCode() {
+    execCode() {
         const compiler = this.langList.find(l => l.value === this.state.mode).compiler;
         if (compiler) {
-            const res = await fetch('https://wandbox.org/api/compile.json', {
-                method: 'POST',
-                cache: 'no-cache',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    code: this.state.code,
-                    compiler: compiler,
-                    stdin: ''
-                })
-            });
-            const json = await res.json();
-            const current = new Date();
-            this.setState(state => {
-                return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.program_output}${state.console}` }
+            this.setState({ isRunning: true }, async () => {
+                const res = await fetch('https://wandbox.org/api/compile.json', {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        code: this.state.code,
+                        compiler: compiler,
+                        stdin: ''
+                    })
+                });
+                const json = await res.json();
+                const current = new Date();
+                this.setState(state => {
+                    return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.program_output}${state.console}`, isRunning: false }
+                });
             });
         }
     }
@@ -145,7 +148,7 @@ export class Editor extends Component {
                         </Grid>
                         <Grid item xs={4}></Grid>
                         <Grid item xs={2}>
-                            <Button fullWidth color='primary' variant='contained' onClick={this.execCodeBinded}>▶ 実行</Button>
+                            <Button fullWidth color='primary' variant='contained' onClick={this.execCodeBinded} disabled={this.state.isRunning}>▶ 実行</Button>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -179,6 +182,7 @@ export class Editor extends Component {
                         }}
                         value={this.state.console}
                     ></ReactAce>
+                    <LinearProgress style={{ display: this.state.isRunning ? 'block' : 'none' }}></LinearProgress>
                 </Grid>
             </Grid>
         )
