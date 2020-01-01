@@ -30,16 +30,16 @@ import 'ace-builds/src-noconflict/theme-dreamweaver';
 export class Editor extends Component {
     static displayName = Editor.name;
     langList = [
-        { name: 'C/C++', value: 'c_cpp' },
-        { name: 'C#', value: 'csharp' },
-        { name: 'Java', value: 'java' },
-        { name: 'Python', value: 'python' },
-        { name: 'PHP', value: 'php' },
-        { name: 'Ruby', value: 'ruby' },
-        { name: 'Go', value: 'golang' },
+        { name: 'C/C++', value: 'c_cpp', compiler: 'gcc-head' },
+        { name: 'C#', value: 'csharp', compiler: 'dotnetcore-head' },
+        { name: 'Java', value: 'java', compiler: 'openjdk-head' },
+        { name: 'Python', value: 'python', compiler: 'cpython-head' },
+        { name: 'PHP', value: 'php', compiler: 'php-head' },
+        { name: 'Ruby', value: 'ruby', compiler: 'ruby-head' },
+        { name: 'Go', value: 'golang', compiler: 'go-head' },
         { name: 'HTML', value: 'html' },
         { name: 'CSS', value: 'css' },
-        { name: 'JavaScript', value: 'javascript' },
+        { name: 'JavaScript', value: 'javascript', compiler: 'nodejs-head' },
         { name: 'Markdown', value: 'markdown' },
         { name: 'Plain Text', value: 'plain_text' }
     ];
@@ -62,7 +62,7 @@ export class Editor extends Component {
             theme: 'monokai',
             code: ''
         };
-        this.sendTextBinded = this.sendText.bind(this);
+        this.execCodeBinded = this.execCode.bind(this);
         this.connection = new SignalR.HubConnectionBuilder().withUrl("/shareHub").build();
         this.connection.start().then(() => {
             console.log('connected');
@@ -88,6 +88,25 @@ export class Editor extends Component {
         })).catch(err => {
             console.error(err);
         });
+    }
+    async execCode() {
+        const compiler = this.langList.find(l => l.value === this.state.mode).compiler;
+        if (compiler) {
+            const res = await fetch('https://wandbox.org/api/compile.json', {
+                method: 'POST',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    code: this.state.code,
+                    compiler: compiler,
+                    stdin: ''
+                })
+            });
+            const json = await res.json();
+            console.log(json);
+        }
     }
     render() {
         return (
@@ -122,7 +141,7 @@ export class Editor extends Component {
                         </Grid>
                         <Grid item xs={4}></Grid>
                         <Grid item xs={2}>
-                            <Button fullWidth color='primary' variant='contained'>▶ 実行</Button>
+                            <Button fullWidth color='primary' variant='contained' onClick={this.execCodeBinded}>▶ 実行</Button>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -134,7 +153,7 @@ export class Editor extends Component {
                         height='460px'
                         mode={this.state.mode}
                         theme={this.state.theme}
-                        onChange={v => this.sendTextBinded(v)}
+                        onChange={v => this.sendText(v)}
                         value={this.state.code}
                         setOptions={{
                             useWorker: false
