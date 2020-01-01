@@ -60,7 +60,8 @@ export class Editor extends Component {
         this.state = {
             mode: 'c_cpp',
             theme: 'monokai',
-            code: ''
+            code: '',
+            console: ''
         };
         this.execCodeBinded = this.execCode.bind(this);
         this.connection = new SignalR.HubConnectionBuilder().withUrl("/shareHub").build();
@@ -105,7 +106,10 @@ export class Editor extends Component {
                 })
             });
             const json = await res.json();
-            console.log(json);
+            const current = new Date();
+            this.setState(state => {
+                return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.program_output}${state.console}` }
+            });
         }
     }
     render() {
@@ -164,6 +168,7 @@ export class Editor extends Component {
                 <Grid item xs={12} style={{
                     marginTop: '8px'
                 }}>
+                    <InputLabel>標準出力</InputLabel>
                     <ReactAce
                         width='100%'
                         height='140px'
@@ -172,6 +177,7 @@ export class Editor extends Component {
                         setOptions={{
                             showLineNumbers: false
                         }}
+                        value={this.state.console}
                     ></ReactAce>
                 </Grid>
             </Grid>
