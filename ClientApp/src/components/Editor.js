@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import * as SignalR from '@microsoft/signalr';
 import ReactAce from 'react-ace';
-import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core'
+import { Select, MenuItem, InputLabel, FormControl, Grid, Button } from '@material-ui/core'
 
 import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/mode-csharp';
@@ -91,41 +91,71 @@ export class Editor extends Component {
     }
     render() {
         return (
-            <div>
-                <FormControl>
-                    <InputLabel id='lang-select-label'>言語</InputLabel>
-                    <Select
-                        labelId='lang-select-label'
-                        id='lang-select'
-                        value={this.state.mode}
-                        onChange={e => this.sendMode(e.target.value)}
+            <Grid container>
+                <Grid item xs={12}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={3}>
+                            <FormControl fullWidth>
+                                <InputLabel id='lang-select-label'>言語</InputLabel>
+                                <Select
+                                    labelId='lang-select-label'
+                                    id='lang-select'
+                                    value={this.state.mode}
+                                    onChange={e => this.sendMode(e.target.value)}
+                                >
+                                    {this.langList.map(l => <MenuItem key={l.value} value={l.value}>{l.name}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <FormControl fullWidth>
+                                <InputLabel id='theme-select-label'>テーマ</InputLabel>
+                                <Select
+                                    labelId='theme-select-label'
+                                    id='theme-select'
+                                    value={this.state.theme}
+                                    onChange={e => this.setState({ theme: e.target.value })}
+                                >
+                                    {this.themeList.map(t => <MenuItem key={t} value={t}>{t}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={4}></Grid>
+                        <Grid item xs={2}>
+                            <Button fullWidth color='primary' variant='contained'>▶ 実行</Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={12} style={{
+                    marginTop: '8px'
+                }}>
+                    <ReactAce
+                        width='100%'
+                        height='460px'
+                        mode={this.state.mode}
+                        theme={this.state.theme}
+                        onChange={v => this.sendTextBinded(v)}
+                        value={this.state.code}
+                        setOptions={{
+                            useWorker: false
+                        }}
                     >
-                        {this.langList.map(l => <MenuItem key={l.value} value={l.value}>{l.name}</MenuItem>)}
-                    </Select>
-                </FormControl>
-                <FormControl>
-                    <InputLabel id='theme-select-label'>テーマ</InputLabel>
-                    <Select
-                        labelId='theme-select-label'
-                        id='theme-select'
-                        value={this.state.theme}
-                        onChange={e => this.setState({ theme: e.target.value })}
-                    >
-                        {this.themeList.map(t => <MenuItem key={t} value={t}>{t}</MenuItem>)}
-                    </Select>
-                </FormControl>
-                <ReactAce
-                    width='100%'
-                    mode={this.state.mode}
-                    theme={this.state.theme}
-                    onChange={v => this.sendTextBinded(v)}
-                    value={this.state.code}
-                    setOptions={{
-                        useWorker: false
-                    }}
-                >
-                </ReactAce>
-            </div>
+                    </ReactAce>
+                </Grid>
+                <Grid item xs={12} style={{
+                    marginTop: '8px'
+                }}>
+                    <ReactAce
+                        width='100%'
+                        height='140px'
+                        mode='plain_text'
+                        theme='terminal'
+                        setOptions={{
+                            showLineNumbers: false
+                        }}
+                    ></ReactAce>
+                </Grid>
+            </Grid>
         )
     }
 }
