@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import * as SignalR from '@microsoft/signalr';
 import ReactAce from 'react-ace';
 import { Select, MenuItem, InputLabel, FormControl, Grid, Button, LinearProgress } from '@material-ui/core'
+import InputDialog from './InputDialog';
 
 import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/mode-csharp';
@@ -62,11 +63,15 @@ export class Editor extends Component {
             theme: 'monokai',
             code: '',
             console: '',
+            stdin: '',
             isRunning: false,
+            showInputDialog: false,
             cursorRow: 0,
             cursorCol: 0
         };
         this.execCodeBinded = this.execCode.bind(this);
+        this.togglInputDialogBinded = this.togglInputDialog.bind(this);
+        this.setStdinBinded = this.setStdin.bind(this);
         this.connection = new SignalR.HubConnectionBuilder().withUrl("/shareHub").build();
         this.connection.start().then(() => {
             console.log('connected');
@@ -106,7 +111,7 @@ export class Editor extends Component {
                     body: JSON.stringify({
                         code: this.state.code,
                         compiler: compiler,
-                        stdin: ''
+                        stdin: this.state.stdin
                     })
                 });
                 const json = await res.json();
@@ -116,6 +121,16 @@ export class Editor extends Component {
                 });
             });
         }
+    }
+    togglInputDialog(open = false, exec = false) {
+        this.setState({ showInputDialog: open }, () => {
+            if (exec) {
+                this.execCode();
+            }
+        });
+    }
+    setStdin(stdin) {
+        this.setState({ stdin });
     }
     render() {
         return (
@@ -152,7 +167,8 @@ export class Editor extends Component {
                             <p>行:{this.state.cursorRow} 列:{this.state.cursorCol} 文字数:{this.state.code.length}</p>
                         </Grid>
                         <Grid item xs={2}>
-                            <Button fullWidth color='primary' variant='contained' onClick={this.execCodeBinded} disabled={this.state.isRunning}>▶ 実行</Button>
+                            <Button fullWidth color='primary' variant='contained' onClick={() => this.togglInputDialogBinded(true)} disabled={this.state.isRunning}>▶ 実行</Button>
+                            <InputDialog show={this.state.showInputDialog} togglOpen={this.togglInputDialogBinded} setStdin={this.setStdinBinded} stdin={this.state.stdin}></InputDialog>
                         </Grid>
                     </Grid>
                 </Grid>
