@@ -58,10 +58,12 @@ export class Editor extends Component {
     ];
     constructor(props) {
         super(props);
+        const prevlang = window.localStorage.getItem('prevlang') ? window.localStorage.getItem('prevlang') : 'c_cpp';
+        const prevcode = window.localStorage.getItem('prevcode') ? window.localStorage.getItem('prevcode') : '';
         this.state = {
-            mode: 'c_cpp',
+            mode: prevlang,
             theme: 'monokai',
-            code: '',
+            code: prevcode,
             console: '',
             stdin: '',
             isRunning: false,
@@ -81,6 +83,7 @@ export class Editor extends Component {
     }
 
     sendText(sendText) {
+        window.localStorage.setItem('prevcode', sendText);
         this.setState({ code: sendText });
         this.connection.invoke("SendMessage", JSON.stringify({
             type: 'code',
@@ -90,6 +93,7 @@ export class Editor extends Component {
         });
     }
     sendMode(mode) {
+        window.localStorage.setItem('prevlang', mode);
         this.setState({ mode: mode });
         this.connection.invoke("SendMessage", JSON.stringify({
             type: 'mode',
@@ -146,7 +150,7 @@ export class Editor extends Component {
                                     value={this.state.mode}
                                     onChange={e => this.sendMode(e.target.value)}
                                 >
-                                    {this.langList.map(l => <MenuItem key={l.value} value={l.value}>{l.name}</MenuItem>)}
+                                    {this.langList.map(l => <MenuItem key={l.value} value={l.value} selected={l.value === this.state.mode}>{l.name}</MenuItem>)}
                                 </Select>
                             </FormControl>
                         </Grid>
