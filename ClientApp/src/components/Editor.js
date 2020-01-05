@@ -66,6 +66,7 @@ export class Editor extends Component {
             code: prevcode,
             console: '',
             stdin: '',
+            fontSize: 12,
             isRunning: false,
             showInputDialog: false,
             cursorRow: 0,
@@ -141,7 +142,7 @@ export class Editor extends Component {
             <Grid container>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <FormControl fullWidth>
                                 <InputLabel id='lang-select-label'>言語</InputLabel>
                                 <Select
@@ -150,11 +151,11 @@ export class Editor extends Component {
                                     value={this.state.mode}
                                     onChange={e => this.sendMode(e.target.value)}
                                 >
-                                    {this.langList.map(l => <MenuItem key={l.value} value={l.value} selected={l.value === this.state.mode}>{l.name}</MenuItem>)}
+                                    {this.langList.map(l => <MenuItem key={l.value} value={l.value}>{l.name}</MenuItem>)}
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <FormControl fullWidth>
                                 <InputLabel id='theme-select-label'>テーマ</InputLabel>
                                 <Select
@@ -164,6 +165,18 @@ export class Editor extends Component {
                                     onChange={e => this.setState({ theme: e.target.value })}
                                 >
                                     {this.themeList.map(t => <MenuItem key={t} value={t}>{t}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <FormControl fullWidth>
+                                <InputLabel id='font-size-select-label'>フォントサイズ</InputLabel>
+                                <Select
+                                    labelId='font-size-select-label'
+                                    id='font-size-select'
+                                    value={this.state.fontSize}
+                                    onChange={e => this.setState({ fontSize: e.target.value })}>
+                                    {[10, 11, 12, 14, 16, 18, 20, 22, 24].map(s => <MenuItem key={s} value={s}>{s}</MenuItem>)}
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -187,6 +200,7 @@ export class Editor extends Component {
                         onChange={v => this.sendText(v)}
                         onCursorChange={c => this.setState({ cursorRow: c.cursor.row, cursorCol: c.cursor.column })}
                         value={this.state.code}
+                        fontSize={this.state.fontSize}
                         setOptions={{
                             useWorker: false
                         }}
