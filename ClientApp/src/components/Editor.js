@@ -122,7 +122,13 @@ export class Editor extends Component {
                 const json = await res.json();
                 const current = new Date();
                 this.setState(state => {
-                    return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.program_output}${state.console}`, isRunning: false }
+                    if (json.program_error) {
+                        return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.program_error}${state.console}`, isRunning: false }
+                    } else if (json.compiler_error) {
+                        return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.compiler_error}${state.console}`, isRunning: false }
+                    } else {
+                        return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.program_output}${state.console}`, isRunning: false }
+                    }
                 });
             });
         }
