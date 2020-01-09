@@ -61,6 +61,7 @@ export class Editor extends Component {
         const prevlang = window.localStorage.getItem('prevlang') ? window.localStorage.getItem('prevlang') : 'c_cpp';
         const prevcode = window.localStorage.getItem('prevcode') ? window.localStorage.getItem('prevcode') : '';
         this.state = {
+            sessionId: '',
             mode: prevlang,
             theme: 'monokai',
             code: prevcode,
@@ -75,18 +76,22 @@ export class Editor extends Component {
         this.execCodeBinded = this.execCode.bind(this);
         this.togglInputDialogBinded = this.togglInputDialog.bind(this);
         this.setStdinBinded = this.setStdin.bind(this);
-        this.connection = new SignalR.HubConnectionBuilder().withUrl("/shareHub").build();
+        this.connection = new SignalR.HubConnectionBuilder().withUrl('/shareHub').build();
         this.connection.start().then(() => {
             console.log('connected');
+            this.connection.invoke('JoinGroup', '');
         }).catch(err => {
             console.error(err);
         });
+        this.connection.on('Joined', sessionId => {
+            this.setState({ sessionId: sessionId });
+        })
     }
 
     sendText(sendText) {
         window.localStorage.setItem('prevcode', sendText);
         this.setState({ code: sendText });
-        this.connection.invoke("SendMessage", JSON.stringify({
+        this.connection.invoke('SendMessage', JSON.stringify({
             type: 'code',
             data: sendText
         })).catch(err => {
@@ -96,7 +101,7 @@ export class Editor extends Component {
     sendMode(mode) {
         window.localStorage.setItem('prevlang', mode);
         this.setState({ mode: mode });
-        this.connection.invoke("SendMessage", JSON.stringify({
+        this.connection.invoke('SendMessage', JSON.stringify({
             type: 'mode',
             data: mode
         })).catch(err => {
@@ -144,8 +149,12 @@ export class Editor extends Component {
         this.setState({ stdin });
     }
     render() {
+        const shareLink = `${window.location.origin}/viewer?session=${this.state.sessionId}`;
         return (
             <Grid container>
+                <Grid item xs={12}>
+                    <a href={shareLink} target='_blank' rel='noopener noreferrer'>{shareLink}</a>
+                </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={2}>
@@ -200,7 +209,7 @@ export class Editor extends Component {
                 }}>
                     <ReactAce
                         width='100%'
-                        height='460px'
+                        height='420px'
                         mode={this.state.mode}
                         theme={this.state.theme}
                         onChange={v => this.sendText(v)}
