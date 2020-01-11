@@ -91,7 +91,7 @@ export class Editor extends Component {
     sendText(sendText) {
         window.localStorage.setItem('prevcode', sendText);
         this.setState({ code: sendText });
-        this.connection.invoke('SendMessage', JSON.stringify({
+        this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
             type: 'code',
             data: sendText
         })).catch(err => {
@@ -101,7 +101,7 @@ export class Editor extends Component {
     sendMode(mode) {
         window.localStorage.setItem('prevlang', mode);
         this.setState({ mode: mode });
-        this.connection.invoke('SendMessage', JSON.stringify({
+        this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
             type: 'mode',
             data: mode
         })).catch(err => {

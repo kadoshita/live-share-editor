@@ -60,9 +60,26 @@ export class Viewer extends Component {
         });
         this.connection.start().then(() => {
             console.log('connected');
+            const queryParameters = this.parseQueryString();
+            if ('session' in queryParameters) {
+                this.connection.invoke('JoinGroup', queryParameters.session);
+            } else {
+                console.error('not set session id');
+            }
         }).catch(err => {
             console.error(err);
         });
+    }
+    parseQueryString() {
+        const queryString = window.location.search.replace('?', '');
+        const queryList = queryString.split('&');
+        let queryParameters = {};
+        queryList.forEach(q => {
+            const key = q.split('=')[0];
+            const value = q.split('=')[1];
+            queryParameters[key] = value;
+        });
+        return queryParameters;
     }
 
     render() {

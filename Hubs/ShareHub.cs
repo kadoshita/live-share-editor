@@ -23,9 +23,9 @@ namespace live_share_editor.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, sessionId);
             await Clients.Caller.SendAsync("Joined", sessionId);
         }
-        public async Task SendMessage(string message)
+        public async Task SendMessage(string sessionId, string message)
         {
-            await Clients.Others.SendAsync("ReceiveMessage", message);
+            await Clients.Group(sessionId).SendAsync("ReceiveMessage", message);
         }
     }
 }
