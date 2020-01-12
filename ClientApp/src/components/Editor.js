@@ -85,6 +85,14 @@ export class Editor extends Component {
         });
         this.connection.on('Joined', sessionId => {
             this.setState({ sessionId: sessionId });
+        });
+        this.connection.on('JoinNotify', () => {
+            this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
+                type: 'code',
+                data: this.state.code
+            })).catch(err => {
+                console.error(err);
+            });
         })
     }
 

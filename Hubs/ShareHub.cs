@@ -22,6 +22,7 @@ namespace live_share_editor.Hubs
             Console.WriteLine($"{Context.ConnectionId} joined {sessionId}");
             await Groups.AddToGroupAsync(Context.ConnectionId, sessionId);
             await Clients.Caller.SendAsync("Joined", sessionId);
+            await Clients.Group(sessionId).SendAsync("JoinNotify");
         }
         public async Task SendMessage(string sessionId, string message)
         {
