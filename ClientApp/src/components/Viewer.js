@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import * as SignalR from '@microsoft/signalr';
 import ReactAce from 'react-ace';
-import { Select, MenuItem, InputLabel, FormControl, Grid } from '@material-ui/core'
+import { Select, MenuItem, InputLabel, FormControl, Grid } from '@material-ui/core';
+import Common from '../common';
 
 import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/mode-csharp';
@@ -60,7 +61,7 @@ export class Viewer extends Component {
         });
         this.connection.start().then(() => {
             console.log('connected');
-            const queryParameters = this.parseQueryString();
+            const queryParameters = Common.parseQueryString();
             if ('session' in queryParameters) {
                 this.connection.invoke('JoinGroup', queryParameters.session);
             } else {
@@ -69,17 +70,6 @@ export class Viewer extends Component {
         }).catch(err => {
             console.error(err);
         });
-    }
-    parseQueryString() {
-        const queryString = window.location.search.replace('?', '');
-        const queryList = queryString.split('&');
-        let queryParameters = {};
-        queryList.forEach(q => {
-            const key = q.split('=')[0];
-            const value = q.split('=')[1];
-            queryParameters[key] = value;
-        });
-        return queryParameters;
     }
 
     render() {

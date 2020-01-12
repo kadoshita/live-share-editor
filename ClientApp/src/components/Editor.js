@@ -3,6 +3,7 @@ import * as SignalR from '@microsoft/signalr';
 import ReactAce from 'react-ace';
 import { Select, MenuItem, InputLabel, FormControl, Grid, Button, LinearProgress } from '@material-ui/core'
 import InputDialog from './InputDialog';
+import Common from '../common';
 
 import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/mode-csharp';
@@ -79,12 +80,18 @@ export class Editor extends Component {
         this.connection = new SignalR.HubConnectionBuilder().withUrl('/shareHub').build();
         this.connection.start().then(() => {
             console.log('connected');
-            this.connection.invoke('JoinGroup', '');
+            const queryParameters = Common.parseQueryString();
+            let sessionId = '';
+            if ('session' in queryParameters) {
+                sessionId = queryParameters.session;
+            }
+            this.connection.invoke('JoinGroup', sessionId);
         }).catch(err => {
             console.error(err);
         });
         this.connection.on('Joined', sessionId => {
             this.setState({ sessionId: sessionId });
+            window.history.replaceState('', '', `${window.location.origin}/editor?session=${sessionId}`);
         });
         this.connection.on('JoinNotify', () => {
             this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
