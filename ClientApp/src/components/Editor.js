@@ -139,6 +139,10 @@ export class Editor extends Component {
                         return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.program_error}${state.console}`, isRunning: false }
                     } else if (json.compiler_error) {
                         return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.compiler_error}${state.console}`, isRunning: false }
+                    } else if (json.compiler_output) {
+                        return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.compiler_output}${state.console}`, isRunning: false }
+                    } else if (json.compiler_message) {
+                        return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.compiler_message}${state.console}`, isRunning: false }
                     } else {
                         return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.program_output}${state.console}`, isRunning: false }
                     }
