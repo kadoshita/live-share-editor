@@ -63,7 +63,7 @@ export class Viewer extends Component {
             console.log('connected');
             const queryParameters = Common.parseQueryString();
             if ('session' in queryParameters) {
-                this.connection.invoke('JoinGroup', queryParameters.session);
+                this.connection.invoke('JoinGroup', { sessionId: queryParameters.session, isEditor: false });
             } else {
                 console.error('not set session id');
             }

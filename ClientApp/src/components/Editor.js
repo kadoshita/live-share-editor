@@ -85,13 +85,18 @@ export class Editor extends Component {
             if ('session' in queryParameters) {
                 sessionId = queryParameters.session;
             }
-            this.connection.invoke('JoinGroup', sessionId);
+            this.connection.invoke('JoinGroup', { sessionId: sessionId, isEditor: true });
         }).catch(err => {
             console.error(err);
         });
-        this.connection.on('Joined', sessionId => {
-            this.setState({ sessionId: sessionId });
-            window.history.replaceState('', '', `${window.location.origin}/editor?session=${sessionId}`);
+        this.connection.on('Joined', res => {
+            console.log(res);
+            if (res.succeeded) {
+                this.setState({ sessionId: res.sessionId });
+                window.history.replaceState('', '', `${window.location.origin}/editor?session=${res.sessionId}`);
+            } else {
+                console.error(res.message);
+            }
         });
         this.connection.on('JoinNotify', () => {
             this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
@@ -100,7 +105,10 @@ export class Editor extends Component {
             })).catch(err => {
                 console.error(err);
             });
-        })
+        });
+    }
+    componentWillUnmount() {
+        this.connection.invoke('LeaveGroup', this.state.sessionId);
     }
 
     sendText(sendText) {
