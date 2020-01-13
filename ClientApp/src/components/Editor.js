@@ -105,6 +105,12 @@ export class Editor extends Component {
             })).catch(err => {
                 console.error(err);
             });
+            this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
+                type: 'mode',
+                data: this.state.mode
+            })).catch(err => {
+                console.error(err);
+            });
         });
     }
     componentWillUnmount() {
