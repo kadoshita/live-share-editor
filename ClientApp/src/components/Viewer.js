@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import * as SignalR from '@microsoft/signalr';
 import ReactAce from 'react-ace';
-import { Select, MenuItem, InputLabel, FormControl, Grid } from '@material-ui/core'
+import { Select, MenuItem, InputLabel, FormControl, Grid } from '@material-ui/core';
+import Common from '../common';
 
 import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/mode-csharp';
@@ -60,6 +61,12 @@ export class Viewer extends Component {
         });
         this.connection.start().then(() => {
             console.log('connected');
+            const queryParameters = Common.parseQueryString();
+            if ('session' in queryParameters) {
+                this.connection.invoke('JoinGroup', { sessionId: queryParameters.session, isEditor: false });
+            } else {
+                console.error('not set session id');
+            }
         }).catch(err => {
             console.error(err);
         });

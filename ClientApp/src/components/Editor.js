@@ -3,6 +3,7 @@ import * as SignalR from '@microsoft/signalr';
 import ReactAce from 'react-ace';
 import { Select, MenuItem, InputLabel, FormControl, Grid, Button, LinearProgress } from '@material-ui/core'
 import InputDialog from './InputDialog';
+import Common from '../common';
 
 import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/mode-csharp';
@@ -61,6 +62,7 @@ export class Editor extends Component {
         const prevlang = window.localStorage.getItem('prevlang') ? window.localStorage.getItem('prevlang') : 'c_cpp';
         const prevcode = window.localStorage.getItem('prevcode') ? window.localStorage.getItem('prevcode') : '';
         this.state = {
+            sessionId: '',
             mode: prevlang,
             theme: 'monokai',
             code: prevcode,
@@ -75,18 +77,50 @@ export class Editor extends Component {
         this.execCodeBinded = this.execCode.bind(this);
         this.togglInputDialogBinded = this.togglInputDialog.bind(this);
         this.setStdinBinded = this.setStdin.bind(this);
-        this.connection = new SignalR.HubConnectionBuilder().withUrl("/shareHub").build();
+        this.connection = new SignalR.HubConnectionBuilder().withUrl('/shareHub').build();
         this.connection.start().then(() => {
             console.log('connected');
+            const queryParameters = Common.parseQueryString();
+            let sessionId = '';
+            if ('session' in queryParameters) {
+                sessionId = queryParameters.session;
+            }
+            this.connection.invoke('JoinGroup', { sessionId: sessionId, isEditor: true });
         }).catch(err => {
             console.error(err);
         });
+        this.connection.on('Joined', res => {
+            console.log(res);
+            if (res.succeeded) {
+                this.setState({ sessionId: res.sessionId });
+                window.history.replaceState('', '', `${window.location.origin}/editor?session=${res.sessionId}`);
+            } else {
+                console.error(res.message);
+            }
+        });
+        this.connection.on('JoinNotify', () => {
+            this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
+                type: 'code',
+                data: this.state.code
+            })).catch(err => {
+                console.error(err);
+            });
+            this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
+                type: 'mode',
+                data: this.state.mode
+            })).catch(err => {
+                console.error(err);
+            });
+        });
+    }
+    componentWillUnmount() {
+        this.connection.invoke('LeaveGroup', this.state.sessionId);
     }
 
     sendText(sendText) {
         window.localStorage.setItem('prevcode', sendText);
         this.setState({ code: sendText });
-        this.connection.invoke("SendMessage", JSON.stringify({
+        this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
             type: 'code',
             data: sendText
         })).catch(err => {
@@ -96,7 +130,7 @@ export class Editor extends Component {
     sendMode(mode) {
         window.localStorage.setItem('prevlang', mode);
         this.setState({ mode: mode });
-        this.connection.invoke("SendMessage", JSON.stringify({
+        this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
             type: 'mode',
             data: mode
         })).catch(err => {
@@ -126,6 +160,10 @@ export class Editor extends Component {
                         return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.program_error}${state.console}`, isRunning: false }
                     } else if (json.compiler_error) {
                         return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.compiler_error}${state.console}`, isRunning: false }
+                    } else if (json.compiler_output) {
+                        return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.compiler_output}${state.console}`, isRunning: false }
+                    } else if (json.compiler_message) {
+                        return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.compiler_message}${state.console}`, isRunning: false }
                     } else {
                         return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.program_output}${state.console}`, isRunning: false }
                     }
@@ -144,8 +182,12 @@ export class Editor extends Component {
         this.setState({ stdin });
     }
     render() {
+        const shareLink = `${window.location.origin}/viewer?session=${this.state.sessionId}`;
         return (
             <Grid container>
+                <Grid item xs={12}>
+                    <a href={shareLink} target='_blank' rel='noopener noreferrer'>{shareLink}</a>
+                </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={2}>
@@ -200,7 +242,7 @@ export class Editor extends Component {
                 }}>
                     <ReactAce
                         width='100%'
-                        height='460px'
+                        height='420px'
                         mode={this.state.mode}
                         theme={this.state.theme}
                         onChange={v => this.sendText(v)}
