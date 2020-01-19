@@ -22,16 +22,16 @@ env:
   NODE_VERSION: '10.x'                # set this to the node version to use
 
 jobs:
-  azure_login:
-    name: Login
-    runs-on: ubuntu-latest
-    steps:
-    - uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+  #azure_login:
+  #  name: Login
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #  - uses: azure/login@v1
+  #    with:
+  #      creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-  build:
-    name: Build
+  build-and-deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -43,14 +43,7 @@ jobs:
       run: dotnet build --configuration Release
     - name: Publish with dotnet
       run: dotnet publish -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
-     
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: 'Deploy to Azure WebApp'
+    - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v1
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
