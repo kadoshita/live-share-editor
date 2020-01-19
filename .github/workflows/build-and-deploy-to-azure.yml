@@ -11,7 +11,6 @@
 on:
   push:
     branches:
-      - master
       - github-actions
     tags:
       - v*
@@ -22,14 +21,6 @@ env:
   NODE_VERSION: '10.x'                # set this to the node version to use
 
 jobs:
-  #azure_login:
-  #  name: Login
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #  - uses: azure/login@v1
-  #    with:
-  #      creds: ${{ secrets.AZURE_CREDENTIALS }}
-
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
@@ -39,8 +30,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.100
-    - name: Build with dotnet
-      run: dotnet build --configuration Release
+#     - name: Build with dotnet
+#       run: dotnet build --configuration Release
     - name: Publish with dotnet
       run: dotnet publish -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Deploy to Azure WebApp
