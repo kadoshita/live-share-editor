@@ -12,6 +12,7 @@ on:
   push:
     branches:
       - master
+      - github-actions
     tags:
       - v*
 
