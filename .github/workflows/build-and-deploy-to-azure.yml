@@ -47,6 +47,7 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
     - name: npm install, build
       run: |
+        cd ClientApp
         npm install
         npm run build --if-present
 
