@@ -18,7 +18,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: live-share-editor    # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: './build'      # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_PACKAGE_PATH: 'build'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '10.x'                # set this to the node version to use
 
 jobs:
@@ -42,7 +42,7 @@ jobs:
     - name: Build with dotnet
       run: dotnet build --configuration Release
     - name: Publish with dotnet
-      run: dotnet publish -c Release -o build
+      run: dotnet publish -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
      
   deploy:
