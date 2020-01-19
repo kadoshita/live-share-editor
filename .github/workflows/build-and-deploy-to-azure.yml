@@ -1,3 +1,4 @@
+name: Build and Deploy to Azure
 on:
   push:
     branches:
