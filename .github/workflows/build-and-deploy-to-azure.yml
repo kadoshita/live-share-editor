@@ -22,6 +22,16 @@ env:
   NODE_VERSION: '10.x'                # set this to the node version to use
 
 jobs:
+  azure_login:
+    name: Login
+    runs-on: ubuntu-latest
+    steps:
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - run: |
+        az webapp list --query "[?state=='Running']"
+
   build:
     name: Build
     runs-on: ubuntu-latest
