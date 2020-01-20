@@ -112,8 +112,16 @@ export class Editor extends Component {
                 console.error(err);
             });
         });
+        window.addEventListener('beforeunload', () => {
+            console.log('leave');
+            this.connection.invoke('LeaveGroup', this.state.sessionId);
+        });
+    }
+    componentDidUpdate() {
+        window.history.replaceState('', '', `${window.location.origin}/editor?session=${this.state.sessionId}`);
     }
     componentWillUnmount() {
+        console.log('leave');
         this.connection.invoke('LeaveGroup', this.state.sessionId);
     }
 
