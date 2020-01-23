@@ -240,7 +240,7 @@ export class Editor extends Component {
                             <p>行:{this.state.cursorRow} 列:{this.state.cursorCol} 文字数:{this.state.code.length}</p>
                         </Grid>
                         <Grid item xs={2}>
-                            <Button fullWidth color='primary' variant='contained' onClick={() => this.togglInputDialogBinded(true)} disabled={this.state.isRunning}>▶ 実行</Button>
+                            <Button fullWidth color='secondary' variant='contained' onClick={() => this.togglInputDialogBinded(true)} disabled={this.state.isRunning}>▶ 実行</Button>
                             <InputDialog show={this.state.showInputDialog} togglOpen={this.togglInputDialogBinded} setStdin={this.setStdinBinded} stdin={this.state.stdin}></InputDialog>
                         </Grid>
                     </Grid>
