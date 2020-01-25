@@ -69,8 +69,12 @@ export class Home extends Component {
           </Grid>
         </Grid>
         <Grid item xs={12} style={{ height: '64px', textAlign: 'right' }}>
-          <a href='https://github.com/kadoshita/live-share-editor' target='_blank' rel='noopener noreferrer'><FontAwesomeIcon icon={faGithub} style={{ height: '100%', width: 'auto', margin: '2px' }}></FontAwesomeIcon></a>
-          <a href='https://twitter.com/lz650sss' target='_blank' rel='noopener noreferrer'><FontAwesomeIcon icon={faTwitter} style={{ height: '100%', width: 'auto', margin: '2px' }}></FontAwesomeIcon></a>
+          <a href='https://github.com/kadoshita/live-share-editor' target='_blank' rel='noopener noreferrer'>
+            <FontAwesomeIcon icon={faGithub} size='3x'></FontAwesomeIcon>
+          </a>
+          <a href='https://twitter.com/intent/tweet?text=ソースコードをリアルタイムで共有できるオンラインエディタ - Live Share Editor&url=https%3A%2F%2Flive-share-editor.azurewebsites.net' target='_blank' rel='noopener noreferrer'>
+            <FontAwesomeIcon icon={faTwitter} size='3x'></FontAwesomeIcon>
+          </a>
         </Grid>
       </Grid >
     );
