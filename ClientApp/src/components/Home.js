@@ -27,7 +27,9 @@ export class Home extends Component {
           </Link>
         </Grid>
         <Grid item xs={12}>
-          <img src='screenshot.png' alt='logo' style={{ width: '100%', height: 'auto', border: '2px solid #F8BBD0' }}></img>
+          <Paper elevation={4}>
+            <img src='screenshot.png' alt='logo' style={{ width: '100%', height: 'auto', border: '2px solid #F8BBD0' }}></img>
+          </Paper>
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={2} style={{ textAlign: 'center' }}>
