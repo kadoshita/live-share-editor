@@ -1,6 +1,7 @@
 /* Provide sufficient contrast against white background */
+
 a {
-  color: #0366d6;
+  color: #55B2B8;
 }
 
 code {
@@ -11,4 +12,26 @@ code {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
+}
+
+.hover-item-parent {
+  position: relative;
+  height: 145px;
+}
+
+.hover-item-icon {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  margin: auto;
+  align-content: center;
+}
+
+.hover-item-fade {
+  background-color: rgba(235, 235, 235, 0.6);
+  position: absolute;
+  top: 0px;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
