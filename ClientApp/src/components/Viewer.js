@@ -82,6 +82,7 @@ export class Viewer extends Component {
     togglInputDialog(open = false, joinSession = false) {
         this.setState({ showSessionIdInputDialog: open }, () => {
             if (joinSession) {
+                window.history.replaceState('', '', `${window.location.origin}/viewer?session=${this.state.sessionId}`);
                 this.connection.invoke('JoinGroup', { sessionId: this.state.sessionId, isEditor: false });
             }
         });
