@@ -241,7 +241,17 @@ export class Editor extends Component {
                         </Grid>
                         <Grid item xs={2}>
                             <Button fullWidth color='secondary' variant='contained' onClick={() => this.togglInputDialogBinded(true)} disabled={this.state.isRunning}>▶ 実行</Button>
-                            <InputDialog show={this.state.showInputDialog} togglOpen={this.togglInputDialogBinded} setStdin={this.setStdinBinded} stdin={this.state.stdin}></InputDialog>
+                            <InputDialog
+                                show={this.state.showInputDialog}
+                                title='標準入力'
+                                togglOpen={this.togglInputDialogBinded}
+                                onChangeInput={this.setStdinBinded}
+                                defaultValue={this.state.stdin}
+                                label='標準入力'
+                                okButtonTitle='実行'
+                                cancelButtonTitle='キャンセル'
+                                rowCount={5}
+                            ></InputDialog>
                         </Grid>
                     </Grid>
                 </Grid>
