@@ -94,6 +94,12 @@ export class Editor extends Component {
             if (res.succeeded) {
                 this.setState({ sessionId: res.sessionId });
                 window.history.replaceState('', '', `${window.location.origin}/editor?session=${res.sessionId}`);
+                if (prevcode !== '') {
+                    this.sendText(prevcode);
+                }
+                if (prevlang !== '') {
+                    this.sendMode(prevlang);
+                }
             } else {
                 console.error(res.message);
             }
