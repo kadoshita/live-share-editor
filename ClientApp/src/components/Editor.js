@@ -29,6 +29,20 @@ import 'ace-builds/src-noconflict/theme-textmate';
 import 'ace-builds/src-noconflict/theme-xcode';
 import 'ace-builds/src-noconflict/theme-dreamweaver';
 
+import 'ace-builds/src-noconflict/snippets/c_cpp';
+import 'ace-builds/src-noconflict/snippets/csharp';
+import 'ace-builds/src-noconflict/snippets/java';
+import 'ace-builds/src-noconflict/snippets/python';
+import 'ace-builds/src-noconflict/snippets/php';
+import 'ace-builds/src-noconflict/snippets/ruby';
+import 'ace-builds/src-noconflict/snippets/golang';
+import 'ace-builds/src-noconflict/snippets/html';
+import 'ace-builds/src-noconflict/snippets/css';
+import 'ace-builds/src-noconflict/snippets/javascript';
+import 'ace-builds/src-noconflict/snippets/markdown';
+
+import 'ace-builds/src-noconflict/ext-language_tools';
+
 export class Editor extends Component {
     static displayName = Editor.name;
     langList = [
@@ -273,8 +287,12 @@ export class Editor extends Component {
                         onCursorChange={c => this.setState({ cursorRow: c.cursor.row, cursorCol: c.cursor.column })}
                         value={this.state.code}
                         fontSize={this.state.fontSize}
+                        editorProps={{ $blockScrolling: Infinity }}
                         setOptions={{
-                            useWorker: false
+                            useWorker: false,
+                            enableBasicAutocompletion: true,
+                            enableLiveAutocompletion: true,
+                            enableSnippets: true,
                         }}
                     >
                     </ReactAce>
