@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import * as SignalR from '@microsoft/signalr';
 import ReactAce from 'react-ace';
-import { Select, MenuItem, InputLabel, FormControl, Grid, Button, LinearProgress } from '@material-ui/core'
+import { Select, MenuItem, InputLabel, FormControl, Grid, Button, LinearProgress } from '@material-ui/core';
+import ClipBoard from 'clipboard';
+import ClipBoardText from './ClipboardText';
 import InputDialog from './InputDialog';
 import Common from '../common';
 
@@ -214,7 +216,7 @@ export class Editor extends Component {
         return (
             <Grid container>
                 <Grid item xs={12}>
-                    <a href={shareLink} target='_blank' rel='noopener noreferrer'>{shareLink}</a>
+                    <ClipBoardText clipboard={ClipBoard} value={shareLink}></ClipBoardText>
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
