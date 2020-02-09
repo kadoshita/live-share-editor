@@ -3,11 +3,13 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace live_share_editor.Hubs
 {
     public class ShareHub : Hub
     {
+        private readonly ILogger _logger;
         private static string ALPHANUMERIC = "abcdefghijklmnopqrstuvwxyz0123456789";
         private static Random random = new Random();
         private static List<string> EditorAlreadyExistsList = new List<string>();
@@ -20,18 +22,24 @@ namespace live_share_editor.Hubs
         {
             return new string(Enumerable.Repeat(ALPHANUMERIC, 8).Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
+        public ShareHub(ILogger<ShareHub> logger)
+        {
+            _logger = logger;
+        }
         public async Task JoinGroup(JoinGroupRequest req)
         {
             string sessionId = req.sessionId;
             if (string.IsNullOrEmpty(sessionId))
             {
                 sessionId = this.GenerateSessionID();
+                _logger.LogInformation($"GenerateSessionID: SessionID={sessionId}");
             }
             if (req.isEditor)
             {
                 if (EditorAlreadyExistsList.Contains(sessionId))
                 {
-                    Console.WriteLine($"{sessionId} Editor is already exists");
+                    _logger.LogInformation($"EditorIsAlreadyExists: SessionID={sessionId}");
                     await Clients.Caller.SendAsync("Joined", new
                     {
                         Succeeded = false,
@@ -46,7 +54,7 @@ namespace live_share_editor.Hubs
                 }
             }
             await Groups.AddToGroupAsync(Context.ConnectionId, sessionId);
-            Console.WriteLine($"{Context.ConnectionId} joined {sessionId} as {(req.isEditor ? "Editor" : "Viewer")}");
+            _logger.LogInformation($"UserJoinGroup: ConnectionId={Context.ConnectionId} SessionID={sessionId} Role={(req.isEditor ? "Editor" : "Viewer")}");
             await Clients.Caller.SendAsync("Joined", new
             {
                 Succeeded = true,
@@ -60,7 +68,7 @@ namespace live_share_editor.Hubs
         }
         public void LeaveGroup(string sessionId)
         {
-            Console.WriteLine($"{sessionId} Editor leave");
+            _logger.LogInformation($"LeaveGroup: SessionID={sessionId}");
             EditorAlreadyExistsList.Remove(sessionId);
         }
         public async Task SendMessage(string sessionId, string message)
