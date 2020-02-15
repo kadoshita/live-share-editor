@@ -1,13 +1,25 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render, unmountComponentAtNode } from 'react-dom';
+import { act } from 'react-dom/test-utils';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 
+let container = null;
+beforeEach(() => {
+  container = document.createElement('div');
+  document.body.appendChild(container);
+});
+afterEach(() => {
+  unmountComponentAtNode(container);
+  container.remove();
+  container = null;
+});
+
 it('renders without crashing', async () => {
-  const div = document.createElement('div');
-  ReactDOM.render(
-    <MemoryRouter>
+  act(() => {
+    render(<MemoryRouter>
       <App />
-    </MemoryRouter>, div);
-  await new Promise(resolve => setTimeout(resolve, 1000));
+    </MemoryRouter>, container);
+  });
+  expect(container.innerHTML).not.toBe('');
 });
