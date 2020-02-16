@@ -2,8 +2,6 @@ name: Build
 
 on:
   push:
-    branches: 
-      - github-actions # for debug
   pull_request:
     branches: 
       - master
