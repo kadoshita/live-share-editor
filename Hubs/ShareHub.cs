@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
-namespace live_share_editor.Hubs
+namespace LiveShareEditor.Hubs
 {
     public class ShareHub : Hub
     {

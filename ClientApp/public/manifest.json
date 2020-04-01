@@ -1,6 +1,6 @@
 {
-  "short_name": "live_share_editor",
-  "name": "live_share_editor",
+  "short_name": "live-share-editor",
+  "name": "live-share-editor",
   "icons": [
     {
       "src": "favicon.ico",

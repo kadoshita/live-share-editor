@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace live_share_editor.Controllers
+namespace LiveShareEditor.Controllers
 {
     [ApiController]
     [Route("[controller]")]

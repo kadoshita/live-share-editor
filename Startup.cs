@@ -6,9 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using live_share_editor.Hubs;
+using LiveShareEditor.Hubs;
 
-namespace live_share_editor
+namespace LiveShareEditor
 {
     public class Startup
     {
