@@ -12,9 +12,12 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
-    - working-directory: ./ClientApp
-    - run: npm install
-    - run: npm test
+    - name: npm install
+      run: npm install
+      working-directory: ./ClientApp
+    - name: npm test
+      run: npm test
+      working-directory: ./ClientApp
   build:
     needs: [test]
     strategy:
