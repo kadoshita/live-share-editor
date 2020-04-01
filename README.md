@@ -1,4 +1,4 @@
-# live-share-editor
+# LiveShareEditor
 
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/kadoshita/live-share-editor.svg)](https://github.com/kadoshita/live-share-editor)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)

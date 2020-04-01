@@ -1,6 +1,6 @@
 using System;
 
-namespace live_share_editor
+namespace LiveShareEditor
 {
     public class WeatherForecast
     {
