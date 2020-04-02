@@ -140,7 +140,10 @@ export class Editor extends Component {
         });
         window.addEventListener('keydown', e => {
             switch (e.key) {
-                case 'F5': this.execCode(); break;
+                case 'F5':
+                    e.preventDefault();
+                    this.execCode();
+                    break;
                 default: break;
             }
         });
