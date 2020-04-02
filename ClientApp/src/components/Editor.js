@@ -5,6 +5,7 @@ import { Select, MenuItem, InputLabel, FormControl, Grid, Button, LinearProgress
 import ClipBoard from 'clipboard';
 import ClipBoardText from './ClipboardText';
 import InputDialog from './InputDialog';
+import MarkdownPreviewDialog from './MarkdownPreviewDialog';
 import Common from '../common';
 
 import 'ace-builds/src-noconflict/mode-c_cpp';
@@ -88,6 +89,7 @@ export class Editor extends Component {
             fontSize: 12,
             isRunning: false,
             showInputDialog: false,
+            showMarkdownPreviewDialog: false,
             cursorRow: 0,
             cursorCol: 0
         };
@@ -233,12 +235,19 @@ export class Editor extends Component {
             });
         }
     }
+    previewMarkdown() {
+        this.setState({ showMarkdownPreviewDialog: true });
+    }
     togglInputDialog(open = false, exec = false) {
-        this.setState({ showInputDialog: open }, () => {
-            if (exec) {
-                this.execCode();
-            }
-        });
+        if (this.state.mode === 'markdown') {
+            this.previewMarkdown();
+        } else {
+            this.setState({ showInputDialog: open }, () => {
+                if (exec) {
+                    this.execCode();
+                }
+            });
+        }
     }
     setStdin(stdin) {
         this.setState({ stdin });
@@ -306,6 +315,11 @@ export class Editor extends Component {
                                 cancelButtonTitle='キャンセル'
                                 rowCount={5}
                             ></InputDialog>
+                            <MarkdownPreviewDialog
+                                show={this.state.showMarkdownPreviewDialog}
+                                code={this.state.code}
+                                togglOpen={() => this.setState(state => { return { showMarkdownPreviewDialog: !state.showMarkdownPreviewDialog } })}
+                            ></MarkdownPreviewDialog>
                         </Grid>
                     </Grid>
                 </Grid>
