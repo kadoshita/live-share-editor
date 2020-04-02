@@ -138,6 +138,12 @@ export class Editor extends Component {
             console.log('leave');
             this.connection.invoke('LeaveGroup', this.state.sessionId);
         });
+        window.addEventListener('keydown', e => {
+            switch (e.key) {
+                case 'F5': this.execCode(); break;
+                default: break;
+            }
+        });
     }
     componentDidUpdate() {
         window.history.replaceState('', '', `${window.location.origin}/editor?session=${this.state.sessionId}`);
