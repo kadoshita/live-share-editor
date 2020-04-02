@@ -143,7 +143,7 @@ export class Editor extends Component {
             switch (e.key) {
                 case 'F5':
                     e.preventDefault();
-                    this.execCode();
+                    this.togglInputDialogBinded(true);
                     break;
                 case 'Meta':
                 case 'Control':
@@ -153,7 +153,7 @@ export class Editor extends Component {
                 case 'Enter':
                     if (this.isPressingMetaOrControlKey) {
                         e.preventDefault();
-                        this.execCode();
+                        this.togglInputDialogBinded(true);
                         this.isPressingMetaOrControlKey = false;
                     }
                     break;
