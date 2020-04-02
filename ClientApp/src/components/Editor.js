@@ -73,6 +73,7 @@ export class Editor extends Component {
         'xcode',
         'dreamweaver'
     ];
+    isPressingMetaOrControlKey = false;
     constructor(props) {
         super(props);
         const prevlang = window.localStorage.getItem('prevlang') ? window.localStorage.getItem('prevlang') : 'c_cpp';
@@ -138,6 +139,37 @@ export class Editor extends Component {
             console.log('leave');
             this.connection.invoke('LeaveGroup', this.state.sessionId);
         });
+        window.addEventListener('keydown', e => {
+            switch (e.key) {
+                case 'F5':
+                    e.preventDefault();
+                    this.execCode();
+                    break;
+                case 'Meta':
+                case 'Control':
+                    e.preventDefault();
+                    this.isPressingMetaOrControlKey = true;
+                    break;
+                case 'Enter':
+                    if (this.isPressingMetaOrControlKey) {
+                        e.preventDefault();
+                        this.execCode();
+                        this.isPressingMetaOrControlKey = false;
+                    }
+                    break;
+                default: break;
+            }
+        });
+        window.addEventListener('keyup', e => {
+            switch (e.key) {
+                case 'Meta':
+                case 'Control':
+                    this.isPressingMetaOrControlKey = false;
+                    break;
+                default:
+                    break;
+            }
+        })
     }
     componentDidUpdate() {
         window.history.replaceState('', '', `${window.location.origin}/editor?session=${this.state.sessionId}`);
