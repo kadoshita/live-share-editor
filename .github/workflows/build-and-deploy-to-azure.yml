@@ -21,6 +21,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.100
+    - name: Replace latest version tag
+      run: sed -i -e s/LATEST_RELEASE_VERSION_TAG/$(git describe --abbrev=0 --tags)/ ./ClientApp/src/components/NavMenu.js
     - name: Publish with dotnet
       run: dotnet publish -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Deploy to Azure WebApp
