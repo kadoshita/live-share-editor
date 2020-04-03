@@ -8,6 +8,10 @@ code {
   color: #E01A76;
 }
 
+h3 {
+  min-height: 145px;
+}
+
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
@@ -16,14 +20,20 @@ code {
 
 .hover-item-parent {
   position: relative;
-  height: 145px;
+  height: 168px;
+  min-height: 168px;
+}
+
+.hover-item-parent>svg {
+  position: absolute;
+  bottom: 24px;
 }
 
 .hover-item-icon {
   position: absolute;
   left: 0px;
-  right: 0px;
   margin: auto;
+  width: 100% !important;
   align-content: center;
 }
 
