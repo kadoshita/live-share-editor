@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import * as SignalR from '@microsoft/signalr';
 import ReactAce from 'react-ace';
 import { Select, MenuItem, InputLabel, FormControl, Grid, Button, LinearProgress } from '@material-ui/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShareSquare } from '@fortawesome/free-solid-svg-icons';
 import ClipBoard from 'clipboard';
 import ClipBoardText from './ClipboardText';
 import InputDialog from './InputDialog';
@@ -136,6 +138,12 @@ export class Editor extends Component {
             })).catch(err => {
                 console.error(err);
             });
+            this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
+                type: 'console',
+                data: this.state.console
+            })).catch(err => {
+                console.error(err);
+            });
         });
         window.addEventListener('beforeunload', () => {
             console.log('leave');
@@ -231,6 +239,13 @@ export class Editor extends Component {
                     } else {
                         return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.program_output}${state.console}`, isRunning: false }
                     }
+                }, () => {
+                    this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
+                        type: 'console',
+                        data: this.state.console
+                    })).catch(err => {
+                        console.error(err);
+                    });
                 });
             });
         }
@@ -348,7 +363,7 @@ export class Editor extends Component {
                 <Grid item xs={12} style={{
                     marginTop: '8px'
                 }}>
-                    <InputLabel>標準出力</InputLabel>
+                    <InputLabel>標準出力<a href={`/console?session=${this.state.sessionId}`} target='_blank' rel='noopener noreferrer'><FontAwesomeIcon icon={faShareSquare} color='#55B2B8' fixedWidth></FontAwesomeIcon></a></InputLabel>
                     <ReactAce
                         width='100%'
                         height='140px'
