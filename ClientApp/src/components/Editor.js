@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import * as SignalR from '@microsoft/signalr';
 import ReactAce from 'react-ace';
 import { Select, MenuItem, InputLabel, FormControl, Grid, Button, LinearProgress } from '@material-ui/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShareSquare } from '@fortawesome/free-solid-svg-icons';
 import ClipBoard from 'clipboard';
 import ClipBoardText from './ClipboardText';
 import InputDialog from './InputDialog';
@@ -348,7 +350,7 @@ export class Editor extends Component {
                 <Grid item xs={12} style={{
                     marginTop: '8px'
                 }}>
-                    <InputLabel>標準出力</InputLabel>
+                    <InputLabel>標準出力<FontAwesomeIcon icon={faShareSquare} color='#55B2B8' fixedWidth></FontAwesomeIcon></InputLabel>
                     <ReactAce
                         width='100%'
                         height='140px'
