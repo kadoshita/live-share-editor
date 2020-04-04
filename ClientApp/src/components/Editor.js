@@ -350,7 +350,7 @@ export class Editor extends Component {
                 <Grid item xs={12} style={{
                     marginTop: '8px'
                 }}>
-                    <InputLabel>標準出力<FontAwesomeIcon icon={faShareSquare} color='#55B2B8' fixedWidth></FontAwesomeIcon></InputLabel>
+                    <InputLabel>標準出力<a href={`/console?session=${this.state.sessionId}`} target='_blank' rel='noopener noreferrer'><FontAwesomeIcon icon={faShareSquare} color='#55B2B8' fixedWidth></FontAwesomeIcon></a></InputLabel>
                     <ReactAce
                         width='100%'
                         height='140px'
