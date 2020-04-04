@@ -138,6 +138,12 @@ export class Editor extends Component {
             })).catch(err => {
                 console.error(err);
             });
+            this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
+                type: 'console',
+                data: this.state.console
+            })).catch(err => {
+                console.error(err);
+            });
         });
         window.addEventListener('beforeunload', () => {
             console.log('leave');
@@ -233,6 +239,13 @@ export class Editor extends Component {
                     } else {
                         return { console: `[${current.toTimeString().split(' ')[0]}] > ${json.program_output}${state.console}`, isRunning: false }
                     }
+                }, () => {
+                    this.connection.invoke('SendMessage', this.state.sessionId, JSON.stringify({
+                        type: 'console',
+                        data: this.state.console
+                    })).catch(err => {
+                        console.error(err);
+                    });
                 });
             });
         }
